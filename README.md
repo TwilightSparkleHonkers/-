@@ -1,6 +1,11 @@
 # -
 👨‍🍳
 
+# Resource Pack Usage
+## Make an item with a custom texture:
+`/give Twinkle_Sprinkle minecraft:diamond[minecraft:custom_model_data=69]`
+
+
 # Plugins
 ```
 twi-server@acer-server:~/minecraft_servers/fabric_1.21.1_mods_tests/mods$ ls

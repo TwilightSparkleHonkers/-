@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-      "layer0": "twinkle_custom_models:item/very_important"
+      "layer0": "twinkle_custom:item/very_important"
     }
   }
