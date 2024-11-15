@@ -4,6 +4,7 @@ import hashlib
 import requests
 import subprocess
 import shutil
+import zipfile
 
 # Hardcoded SSH and server details
 SSH_HOST = "acer"
@@ -17,28 +18,42 @@ CONFIG_FILE = "config.json"
 ZIP_FILENAME = "resourcepack.zip"
 WEBHOOK_URL =  "https://discord.com/api/webhooks/1306769223707525200/yXERVimBNbKp1_pfEDTqm9t45KQzgEhP_SvsUvEZ7W0CYOPe7uhqOlDvJlrC6kpZ0qHv"
 
-# Zip the resource pack directory using PowerShell's Compress-Archive
-def zip_resource_pack():
-    if not os.path.exists(RESOURCEPACK_SRC):
-        print(f"Resource pack folder {RESOURCEPACK_SRC} does not exist.")
-        return None
+# # Zip the resource pack directory using PowerShell's Compress-Archive
+# def zip_resource_pack():
+#     if not os.path.exists(RESOURCEPACK_SRC):
+#         print(f"Resource pack folder {RESOURCEPACK_SRC} does not exist.")
+#         return None
     
-    # Remove existing zip file if it exists
-    if os.path.exists(ZIP_FILENAME):
-        os.remove(ZIP_FILENAME)
+#     # Remove existing zip file if it exists
+#     if os.path.exists(ZIP_FILENAME):
+#         os.remove(ZIP_FILENAME)
 
-    # Use PowerShell's Compress-Archive command to create the zip
-    zip_command = [
-        "powershell", "-Command",
-        f"Compress-Archive -Path {RESOURCEPACK_SRC}/* -DestinationPath {ZIP_FILENAME}"
-    ]
-    result = subprocess.run(zip_command, capture_output=True, text=True)
+#     # Use PowerShell's Compress-Archive command to create the zip
+#     zip_command = [
+#         "powershell", "-Command",
+#         f"Compress-Archive -Path {RESOURCEPACK_SRC}/* -DestinationPath {ZIP_FILENAME}"
+#     ]
+#     result = subprocess.run(zip_command, capture_output=True, text=True)
 
-    if result.returncode != 0:
-        print(f"Failed to zip the resource pack: {result.stderr}")
-        return None
+#     if result.returncode != 0:
+#         print(f"Failed to zip the resource pack: {result.stderr}")
+#         return None
 
-    print(f"Zipped {RESOURCEPACK_SRC} to {ZIP_FILENAME}")
+#     print(f"Zipped {RESOURCEPACK_SRC} to {ZIP_FILENAME}")
+#     return ZIP_FILENAME
+
+
+def zip_directory():
+    """Zip the resource pack directory to the destination."""
+    try:
+        with zipfile.ZipFile(ZIP_FILENAME, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for root, dirs, files in os.walk(RESOURCEPACK_SRC):
+                for file in files:
+                    zipf.write(os.path.join(root, file), 
+                               os.path.relpath(os.path.join(root, file), RESOURCEPACK_SRC))
+        print(f"Zipped {RESOURCEPACK_SRC} to {ZIP_FILENAME}")
+    except Exception as e:
+        print(f"Failed to zip {RESOURCEPACK_SRC}: {e}")
     return ZIP_FILENAME
 
 # Calculate SHA1 hash of the file
@@ -113,7 +128,7 @@ def update_server_properties(download_url, sha1_hash):
 def main():
 
     # Zip the resource pack
-    zip_path = zip_resource_pack()
+    zip_path = zip_directory()
     if not zip_path:
         return
 
