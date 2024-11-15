@@ -1,0 +1,10 @@
+{
+    "music_disc.fortnite": {
+        "sounds": [
+            {
+                "name": "infinite_music_discs:records/fortnite",
+                "stream": true
+            }
+        ]
+    }
+}
